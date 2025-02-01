@@ -135,15 +135,17 @@ impl EventHandler for Handler {
                         .send_message(
                             &ctx.http,
                             CreateMessage::new()
-                                .content(format!("Summary: ```{}```", paper.summary)),
+                                .content(format!("**Summary:** ```{}```", paper.summary)),
                         )
                         .await
                         .expect("Failed to send message");
                     thread_channel
                         .send_message(
                             &ctx.http,
-                            CreateMessage::new()
-                                .content(format!("Translated: ```{}```", paper.translated_summary)),
+                            CreateMessage::new().content(format!(
+                                "**Translated:** ```{}```",
+                                paper.translated_summary
+                            )),
                         )
                         .await
                         .expect("Failed to send message");
