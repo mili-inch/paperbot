@@ -66,7 +66,6 @@ async fn fetch_semantic_scholar_response(arxiv_id: &str) -> Result<SemanticSchol
         encode(&format!("{}{}", base_arxiv_url, arxiv_id))
     );
     let response = Client::new().get(&url).send().await?.text().await?;
-    println!("{}", response);
     let response = serde_json::from_str(&response)?;
 
     Ok(response)
