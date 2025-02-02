@@ -18,3 +18,5 @@ target/
 
 .env
 enabled_channels.json
+
+.vscode/

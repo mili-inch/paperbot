@@ -23,13 +23,13 @@ struct SemanticScholarAuthor {
     name: String,
 
     #[serde(rename = "authorId")]
-    author_id: String,
+    author_id: Option<String>,
 }
 
 #[derive(Debug)]
 pub struct Author {
     pub name: String,
-    pub author_url: String,
+    pub author_url: Option<String>,
 }
 
 #[derive(Debug)]
@@ -62,11 +62,13 @@ async fn fetch_arxiv_entry(arxiv_id: &str) -> Result<ArxivEntry, Error> {
 async fn fetch_semantic_scholar_response(arxiv_id: &str) -> Result<SemanticScholarResponse, Error> {
     let base_arxiv_url = "https://arxiv.org/abs/";
     let url = format!(
-        "https://api.semanticscholar.org/graph/v1/paper/url:{}?fields=year,authors",
+        "https://api.semanticscholar.org/graph/v1/paper/url:{}?fields=authors",
         encode(&format!("{}{}", base_arxiv_url, arxiv_id))
     );
     let response = Client::new().get(&url).send().await?.text().await?;
-    let response: SemanticScholarResponse = serde_json::from_str(&response)?;
+    println!("{}", response);
+    let response = serde_json::from_str(&response)?;
+
     Ok(response)
 }
 
@@ -90,10 +92,10 @@ pub async fn get_paper_info(arxiv_id: &str) -> Result<Paper, Error> {
         .iter()
         .map(|author| Author {
             name: author.name.clone(),
-            author_url: format!(
-                "https://www.semanticscholar.org/author/{}",
-                author.author_id
-            ),
+            author_url: author
+                .author_id
+                .clone()
+                .map(|id| format!("https://www.semanticscholar.org/author/{}", id)),
         })
         .collect();
     let paper = Paper {
