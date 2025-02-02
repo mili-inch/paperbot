@@ -54,7 +54,10 @@ impl Handler {
                         }
                     })
                     .collect::<Vec<_>>()
-                    .join(", "),
+                    .join(", ")
+                    .chars()
+                    .take(1024)
+                    .collect::<String>(),
                 false,
             )
     }
@@ -63,7 +66,7 @@ impl Handler {
     // using a send function provided as a closure.
     async fn send_paper_info_messages<F, Fut>(
         &self,
-        http: &serenity::http::Http,
+        _http: &serenity::http::Http,
         send: F,
         paper: &paper_info::Paper,
     ) where
@@ -164,6 +167,7 @@ impl EventHandler for Handler {
         .await;
     }
     async fn thread_create(&self, ctx: Context, mut thread: GuildChannel) {
+        println!("Thread created: {}", thread.name);
         if thread.parent_id.is_none() {
             return;
         }
