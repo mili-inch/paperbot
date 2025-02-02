@@ -10,7 +10,8 @@ mod handler;
 async fn main() -> Result<(), Error> {
     dotenv().ok();
     let token = std::env::var("DISCORD_TOKEN")?;
-    let intents = GatewayIntents::GUILD_MESSAGES | GatewayIntents::MESSAGE_CONTENT;
+    let intents =
+        GatewayIntents::GUILD_MESSAGES | GatewayIntents::MESSAGE_CONTENT | GatewayIntents::GUILDS;
     let handler = handler::Handler::new();
 
     let mut client = ClientBuilder::new(token, intents)
